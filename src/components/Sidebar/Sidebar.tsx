@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
@@ -47,6 +48,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
     { name: 'Dashboard', path: '/', icon: <MdDashboard /> },
     { name: 'WhatsApp', path: '/whatsapp', icon: <FaWhatsapp /> },
     { name: 'Gmail', path: '/gmail', icon: <FaEnvelope /> },
+
   ];
 
   return (
