@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { FaPaperPlane, FaInbox, FaStar, FaTrash, FaEnvelope, FaSearch } from 'react-icons/fa';
 import axiosInstance from '../../utils/axios';
 import { useGmail } from '../../hooks/useGmail';
-import type { Email, ComposeEmail, EmailFolder } from '../../api/gmail.api';
+import type { Email, EmailFolder } from '../../api/gmail.api';
+import type { ComposeEmail } from '../../types/gmail';
 import { toast } from 'react-hot-toast';
 import { AxiosError } from 'axios';
 
@@ -18,7 +19,7 @@ const Gmail = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentFolder, setCurrentFolder] = useState<EmailFolder>('inbox');
     const [composeEmail, setComposeEmail] = useState<ComposeEmail>({
-        to: '',
+        to: [''],
         subject: '',
         body: ''
     });
@@ -58,24 +59,46 @@ const Gmail = () => {
         }
     }, [emailsError]);
 
-    const handleSendEmail = () => {
-        sendEmailMutation.mutate(composeEmail, {
-            onSuccess: () => {
-                setIsComposing(false);
-                setComposeEmail({ to: '', subject: '', body: '' });
-                toast.success('Email sent successfully');
-            },
-            onError: (error: Error) => {
-                const axiosError = error as AxiosError<ErrorResponse>;
-                const errorMessage = axiosError.response?.data?.details || axiosError.response?.data?.error;
-                if (errorMessage === 'Invalid Credentials') {
-                    localStorage.removeItem('gmail_access_token');
-                    setIsAuthenticated(false);
-                } else {
-                    toast.error('Failed to send email. Please try again.');
-                }
+    const handleToChange = (value: string) => {
+        // Split by comma and trim whitespace
+        const recipients = value.split(',').map(email => email.trim());
+        setComposeEmail(prev => ({
+            ...prev,
+            to: recipients
+        }));
+    };
+
+    const handleSendEmail = async () => {
+        try {
+            // Filter out empty strings from the recipients array
+            const validRecipients = composeEmail.to.filter(email => email.trim() !== '');
+            if (validRecipients.length === 0) {
+                toast.error('Please enter at least one recipient');
+                return;
             }
-        });
+
+            await sendEmailMutation.mutateAsync({
+                ...composeEmail,
+                to: validRecipients
+            });
+            
+            toast.success('Email sent successfully');
+            setIsComposing(false);
+            setComposeEmail({
+                to: [''],
+                subject: '',
+                body: ''
+            });
+        } catch (error) {
+            const axiosError = error as AxiosError<ErrorResponse>;
+            const errorMessage = axiosError.response?.data?.details || axiosError.response?.data?.error;
+            if (errorMessage === 'Invalid Credentials') {
+                localStorage.removeItem('gmail_access_token');
+                setIsAuthenticated(false);
+            } else {
+                toast.error('Failed to send email');
+            }
+        }
     };
 
     const handleToggleStar = (email: Email, e: React.MouseEvent) => {
@@ -244,15 +267,14 @@ const Gmail = () => {
 
             {/* Compose Email Modal */}
             {isComposing && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white rounded-lg w-full max-w-2xl p-6">
-                        <h2 className="text-xl font-semibold mb-4">New Message</h2>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
                         <div className="space-y-4">
                             <input
-                                type="email"
-                                placeholder="To"
-                                value={composeEmail.to}
-                                onChange={(e) => setComposeEmail({ ...composeEmail, to: e.target.value })}
+                                type="text"
+                                value={composeEmail.to.join(', ')}
+                                onChange={(e) => handleToChange(e.target.value)}
+                                placeholder="To: (separate multiple emails with commas)"
                                 className="w-full p-2 border rounded"
                             />
                             <input
@@ -271,15 +293,14 @@ const Gmail = () => {
                             <div className="flex justify-end space-x-2">
                                 <button
                                     onClick={() => setIsComposing(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
-                                    disabled={sendEmailMutation.isPending}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleSendEmail}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                                     disabled={sendEmailMutation.isPending}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
                                 >
                                     {sendEmailMutation.isPending ? 'Sending...' : 'Send'}
                                 </button>

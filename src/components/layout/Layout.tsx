@@ -1,14 +1,22 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import Sidebar from '../Sidebar/Sidebar';
-import { Outlet } from 'react-router-dom';
+import { useState } from 'react';
 
+interface LayoutProps {
+  children: ReactNode;
+}
 
-const Layout: React.FC = () => {
+const Layout = ({ children }: LayoutProps) => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-100">
-          <Outlet />
+    <div className="flex h-screen">
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
+      <main className={`flex-1 overflow-auto ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+        {children}
       </main>
     </div>
   );

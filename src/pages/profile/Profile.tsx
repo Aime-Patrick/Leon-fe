@@ -66,7 +66,7 @@ const Profile = () => {
         }
     });
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setFormData(prev => ({
                 ...prev,
@@ -124,7 +124,7 @@ const Profile = () => {
                         <input
                             type="file"
                             ref={fileInputRef}
-                            onChange={handleFileChange}
+                            onChange={handleProfilePictureChange}
                             accept="image/*"
                             className="hidden"
                         />

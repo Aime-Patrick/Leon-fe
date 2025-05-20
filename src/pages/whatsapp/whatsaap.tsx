@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useEffect } from 'react';
 import { WhatsAppConsole } from '../../components/whatsapp/whatsapp'
 export const Whatsaap = () => {
   return (

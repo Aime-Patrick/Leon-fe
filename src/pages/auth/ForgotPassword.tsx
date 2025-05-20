@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '../../utils/axios';
 import { toast } from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     // Forgot password mutation
     const forgotPasswordMutation = useMutation({
@@ -16,7 +19,7 @@ const ForgotPassword = () => {
             return response.data;
         },
         onSuccess: (data) => {
-            if (isAdmin) {
+            if (data.isAdmin) {
                 toast.success('Password reset link has been sent to your email');
             } else {
                 toast.success('OTP has been sent to your email');
@@ -29,7 +32,18 @@ const ForgotPassword = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        forgotPasswordMutation.mutate({ email, isAdmin });
+        setIsLoading(true);
+        setError('');
+        setSuccess(false);
+
+        try {
+            await axiosInstance.post('/api/auth/forgot-password', { email });
+            setSuccess(true);
+        } catch (error: any) {
+            setError(error.response?.data?.message || 'Failed to send reset email');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -63,27 +77,13 @@ const ForgotPassword = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center">
-                            <input
-                                id="isAdmin"
-                                name="isAdmin"
-                                type="checkbox"
-                                checked={isAdmin}
-                                onChange={(e) => setIsAdmin(e.target.checked)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
-                                I am an admin
-                            </label>
-                        </div>
-
                         <div>
                             <button
                                 type="submit"
-                                disabled={forgotPasswordMutation.isPending}
+                                disabled={isLoading}
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                             >
-                                {forgotPasswordMutation.isPending ? 'Sending...' : 'Send Reset Instructions'}
+                                {isLoading ? 'Sending...' : 'Send Reset Instructions'}
                             </button>
                         </div>
 
