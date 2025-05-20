@@ -44,9 +44,9 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
   ].includes(activePath);
 
   const navigation = [
-    { name: 'Dashboard', path: '/dashboard', icon: <MdDashboard /> },
-    { name: 'WhatsApp', path: '/dashboard/whatsapp', icon: <FaWhatsapp /> },
-    { name: 'Gmail', path: '/dashboard/gmail', icon: <FaEnvelope /> },
+    { name: 'Dashboard', path: '/', icon: <MdDashboard /> },
+    { name: 'WhatsApp', path: '/whatsapp', icon: <FaWhatsapp /> },
+    { name: 'Gmail', path: '/gmail', icon: <FaEnvelope /> },
   ];
 
   return (

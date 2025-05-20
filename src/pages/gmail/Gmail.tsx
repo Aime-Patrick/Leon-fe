@@ -3,6 +3,13 @@ import { FaPaperPlane, FaInbox, FaStar, FaTrash, FaEnvelope, FaSearch } from 're
 import axiosInstance from '../../utils/axios';
 import { useGmail } from '../../hooks/useGmail';
 import type { Email, ComposeEmail, EmailFolder } from '../../api/gmail.api';
+import { toast } from 'react-hot-toast';
+import { AxiosError } from 'axios';
+
+interface ErrorResponse {
+    error: string;
+    details?: string;
+}
 
 const Gmail = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,14 +41,39 @@ const Gmail = () => {
             window.location.href = response.data.authUrl;
         } catch (error) {
             console.error('Error initiating auth:', error);
+            toast.error('Failed to connect to Gmail. Please try again.');
         }
     };
+
+    // Handle Gmail API errors
+    useEffect(() => {
+        if (emailsError) {
+            const error = emailsError as AxiosError<ErrorResponse>;
+            const errorMessage = error.response?.data?.details || error.response?.data?.error;
+            if (errorMessage === 'Invalid Credentials') {
+                // Clear Gmail token
+                localStorage.removeItem('gmail_access_token');
+                setIsAuthenticated(false);
+            }
+        }
+    }, [emailsError]);
 
     const handleSendEmail = () => {
         sendEmailMutation.mutate(composeEmail, {
             onSuccess: () => {
                 setIsComposing(false);
                 setComposeEmail({ to: '', subject: '', body: '' });
+                toast.success('Email sent successfully');
+            },
+            onError: (error: Error) => {
+                const axiosError = error as AxiosError<ErrorResponse>;
+                const errorMessage = axiosError.response?.data?.details || axiosError.response?.data?.error;
+                if (errorMessage === 'Invalid Credentials') {
+                    localStorage.removeItem('gmail_access_token');
+                    setIsAuthenticated(false);
+                } else {
+                    toast.error('Failed to send email. Please try again.');
+                }
             }
         });
     };
@@ -63,22 +95,25 @@ const Gmail = () => {
     );
 
     if (!isAuthenticated) {
+        const error = emailsError as AxiosError<ErrorResponse>;
+        const errorMessage = error?.response?.data?.details || error?.response?.data?.error;
+        const isTokenExpired = errorMessage === 'Invalid Credentials';
+        
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
-                <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
-                    <div className="text-center">
-                        <h2 className="mt-6 text-3xl font-bold text-gray-900">
-                            Connect Your Gmail Account
-                        </h2>
-                        <p className="mt-2 text-sm text-gray-600">
-                            To use Gmail features, you need to connect your account first.
-                        </p>
-                    </div>
+            <div className="flex flex-col items-center justify-center h-full p-6">
+                <div className="text-center flex flex-col justify-center items-center w-full">
+                    <h2 className="text-2xl font-bold mb-4">Connect to Gmail</h2>
+                    <p className="text-gray-600 mb-6">
+                        {isTokenExpired 
+                            ? "Your Gmail connection has expired. Please reconnect to continue."
+                            : "To use Gmail features, you need to connect your Gmail account."}
+                    </p>
                     <button
                         onClick={handleAuth}
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md flex items-center"
                     >
-                        Connect Gmail
+                        <FaEnvelope className="mr-2" />
+                        {isTokenExpired ? "Reconnect Gmail" : "Connect Gmail"}
                     </button>
                 </div>
             </div>

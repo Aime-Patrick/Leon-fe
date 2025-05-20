@@ -13,12 +13,29 @@ import axiosInstance from './utils/axios';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import { CustomToaster } from './utils/toast';
+import { WhatsAppConsole } from './components/whatsapp/whatsapp';
 
 const queryClient = new QueryClient();
 
+// Layout component for authenticated routes
+const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+    return (
+        <div className="flex h-screen">
+            <Sidebar
+                isCollapsed={isSidebarCollapsed}
+                onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            />
+            <main className={`flex-1 overflow-auto ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+                {children}
+            </main>
+        </div>
+    );
+};
+
 const App = () => {
     const [isSetupComplete, setIsSetupComplete] = useState<boolean | null>(null);
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     useEffect(() => {
         const checkSetupStatus = async () => {
@@ -51,23 +68,20 @@ const App = () => {
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/forgot-password" element={<ForgotPassword />} />
                                 <Route path="/reset-password" element={<ResetPassword />} />
+                                <Route path="/auth/google/callback" element={<GoogleCallback />} />
+                                <Route path="/auth/error" element={<AuthError />} />
+                                
+                                {/* Authenticated routes */}
                                 <Route
-                                    path="/"
+                                    path="/*"
                                     element={
-                                        <div className="flex h-screen">
-                                            <Sidebar
-                                                isCollapsed={isSidebarCollapsed}
-                                                onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                                            />
-                                            <main className={`flex-1 overflow-auto ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-                                                <Routes>
-                                                    <Route path="/" element={<Dashboard />} />
-                                                    <Route path="/gmail" element={<Gmail />} />
-                                                    <Route path="/auth/google/callback" element={<GoogleCallback />} />
-                                                    <Route path="/auth/error" element={<AuthError />} />
-                                                </Routes>
-                                            </main>
-                                        </div>
+                                        <AuthenticatedLayout>
+                                            <Routes>
+                                                <Route index element={<Dashboard />} />
+                                                <Route path="gmail" element={<Gmail />} />
+                                                <Route path="whatsapp" element={<WhatsAppConsole />} />
+                                            </Routes>
+                                        </AuthenticatedLayout>
                                     }
                                 />
                             </>
