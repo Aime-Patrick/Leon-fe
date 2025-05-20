@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
-import { MdDashboard, MdExpandMore, MdLogout } from "react-icons/md";
-import { FaMessage, FaWhatsapp, FaEnvelope } from "react-icons/fa6";
-import { FaInstagram, FaFacebook } from "react-icons/fa";
-import { LiaHotelSolid } from "react-icons/lia";
+import { MdDashboard, MdLogout } from "react-icons/md";
+import {  FaWhatsapp, FaEnvelope } from "react-icons/fa6";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -13,17 +11,17 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activePath, setActivePath] = useState<string>("");
-  const [channelOpen, setChannelOpen] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [activePath, setActivePath] = useState<string>("");
+  // const [channelOpen, setChannelOpen] = useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
   const location = useLocation();
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
-  const toggleChannel = () => setChannelOpen((prev) => !prev);
+  // const toggleSidebar = () => setIsOpen(!isOpen);
+  // const toggleChannel = () => setChannelOpen((prev) => !prev);
 
   useEffect(() => {
-    setActivePath(location.pathname);
+    // setActivePath(location.pathname);
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
@@ -37,12 +35,12 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
   };
 
   // Helper to check if any channel is active
-  const isChannelActive = [
-    "/dashboard/whatsapp",
-    "/dashboard/instagram",
-    "/dashboard/gmail",
-    "/dashboard/facebook",
-  ].includes(activePath);
+  // const isChannelActive = [
+  //   "/dashboard/whatsapp",
+  //   "/dashboard/instagram",
+  //   "/dashboard/gmail",
+  //   "/dashboard/facebook",
+  // ].includes(activePath);
 
   const navigation = [
     { name: 'Dashboard', path: '/', icon: <MdDashboard /> },
@@ -50,6 +48,13 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
     { name: 'Gmail', path: '/gmail', icon: <FaEnvelope /> },
 
   ];
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
@@ -80,7 +85,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
           <Link
             key={item.path}
             to={item.path}
-            className={`${styles.navItem} ${location.pathname === item.path ? styles.active : ''}`}
+            className={`${styles.navItem} ${isActive(item.path) ? styles.active : ''}`}
             title={isCollapsed ? item.name : ''}
           >
             <span className={styles.icon}>{item.icon}</span>
