@@ -67,12 +67,11 @@ const Profile = () => {
     });
 
     const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFormData(prev => ({
-                ...prev,
-                profilePicture: e.target.files![0]
-            }));
-        }
+        const file = e.target.files?.[0] || null;
+        setFormData(prev => ({
+            ...prev,
+            profilePicture: file
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

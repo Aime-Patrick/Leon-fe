@@ -6,9 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
     // Forgot password mutation
@@ -24,6 +21,8 @@ const ForgotPassword = () => {
             } else {
                 toast.success('OTP has been sent to your email');
             }
+            // Redirect to login after successful submission
+            navigate('/login');
         },
         onError: (error: any) => {
             toast.error(error.response?.data?.error || 'Failed to process request');
@@ -32,18 +31,9 @@ const ForgotPassword = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
-        setError('');
-        setSuccess(false);
-
-        try {
-            await axiosInstance.post('/api/auth/forgot-password', { email });
-            setSuccess(true);
-        } catch (error: any) {
-            setError(error.response?.data?.message || 'Failed to send reset email');
-        } finally {
-            setIsLoading(false);
-        }
+        // For now, we'll treat all requests as user requests
+        // You can add logic here to determine if it's an admin request
+        forgotPasswordMutation.mutate({ email, isAdmin: false });
     };
 
     return (
@@ -80,10 +70,10 @@ const ForgotPassword = () => {
                         <div>
                             <button
                                 type="submit"
-                                disabled={isLoading}
+                                disabled={forgotPasswordMutation.isPending}
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                             >
-                                {isLoading ? 'Sending...' : 'Send Reset Instructions'}
+                                {forgotPasswordMutation.isPending ? 'Sending...' : 'Send Reset Instructions'}
                             </button>
                         </div>
 

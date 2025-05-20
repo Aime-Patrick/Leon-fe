@@ -15,6 +15,16 @@ const SetupWizard = () => {
         confirmPassword: ''
     });
 
+    const [profileData, setProfileData] = useState<{
+        name: string;
+        email: string;
+        profilePicture: File | null;
+    }>({
+        name: '',
+        email: '',
+        profilePicture: null
+    });
+
     const saveAppInfoMutation = useMutation({
         mutationFn: async (data: { appName: string; logoUrl: string }) => {
             const response = await axiosInstance.post('/api/setup/app-info', data);
@@ -65,6 +75,14 @@ const SetupWizard = () => {
             name: formData.adminName,
             password: formData.adminPassword
         });
+    };
+
+    const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        setProfileData(prev => ({
+            ...prev,
+            profilePicture: file || null
+        }));
     };
 
     return (

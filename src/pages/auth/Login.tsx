@@ -14,8 +14,8 @@ const Login = () => {
     const [resetLoading, setResetLoading] = useState(false);
     const [resetSuccess, setResetSuccess] = useState(false);
     const [resetError, setResetError] = useState('');
-    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+    // const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+    // const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,29 +52,29 @@ const Login = () => {
         }
     };
 
-    const handleForgotPassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsLoading(true);
+    // const handleForgotPassword = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setError('');
+    //     setIsLoading(true);
 
-        try {
-            await axiosInstance.post('/api/auth/forgot-password', {
-                email: forgotPasswordEmail
-            });
-            setShowForgotPasswordModal(false);
-            setForgotPasswordEmail('');
-            // Redirect to reset password page with a success message
-            navigate('/reset-password', { 
-                state: { 
-                    message: 'Password reset instructions have been sent to your email. Please check your inbox.' 
-                }
-            });
-        } catch (err: any) {
-            setError(err.response?.data?.error || 'Failed to send reset email');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    //     try {
+    //         await axiosInstance.post('/api/auth/forgot-password', {
+    //             email: forgotPasswordEmail
+    //         });
+    //         setShowForgotPasswordModal(false);
+    //         setForgotPasswordEmail('');
+    //         // Redirect to reset password page with a success message
+    //         navigate('/reset-password', { 
+    //             state: { 
+    //                 message: 'Password reset instructions have been sent to your email. Please check your inbox.' 
+    //             }
+    //         });
+    //     } catch (err: any) {
+    //         setError(err.response?.data?.error || 'Failed to send reset email');
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
