@@ -15,15 +15,15 @@ const SetupWizard = () => {
         confirmPassword: ''
     });
 
-    const [profileData, setProfileData] = useState<{
-        name: string;
-        email: string;
-        profilePicture: File | null;
-    }>({
-        name: '',
-        email: '',
-        profilePicture: null
-    });
+    // const [profileData, setProfileData] = useState<{
+    //     name: string;
+    //     email: string;
+    //     profilePicture: File | null;
+    // }>({
+    //     name: '',
+    //     email: '',
+    //     profilePicture: null
+    // });
 
     const saveAppInfoMutation = useMutation({
         mutationFn: async (data: { appName: string; logoUrl: string }) => {
@@ -77,13 +77,13 @@ const SetupWizard = () => {
         });
     };
 
-    const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        setProfileData(prev => ({
-            ...prev,
-            profilePicture: file || null
-        }));
-    };
+    // const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0];
+    //     setProfileData(prev => ({
+    //         ...prev,
+    //         profilePicture: file || null
+    //     }));
+    // };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
