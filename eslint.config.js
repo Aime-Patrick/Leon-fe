@@ -12,6 +12,11 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
     },
     plugins: {
       'react-hooks': reactHooks,
@@ -30,5 +35,8 @@ export default tseslint.config(
       }],
       'no-unused-vars': 'off', // Turn off the base rule as it can report incorrect errors
     },
+    linterOptions: {
+      reportUnusedDisableDirectives: false
+    }
   },
 )
