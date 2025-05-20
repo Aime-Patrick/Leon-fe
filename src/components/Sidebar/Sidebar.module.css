@@ -1,0 +1,169 @@
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 50;
+}
+
+.sidebar.collapsed {
+  width: 64px;
+}
+
+.sidebarHeader {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.collapseButton:hover {
+  background-color: #f3f4f6;
+}
+
+.userInfo {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.userDetails {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.userName {
+  font-size: 0.875rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.navigation {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #4b5563;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  gap: 0.75rem;
+}
+
+.navItem:hover {
+  background-color: #f3f4f6;
+}
+
+.navItem.active {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.icon {
+  font-size: 1.25rem;
+  min-width: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.sidebarFooter {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.logoutButton:hover {
+  background-color: #fee2e2;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  font-size: 16px;
+}
+
+.sidebar li {
+  border-radius: 8px;
+}
+
+.sidebar li:hover {
+  background-color: #092485;
+}
+
+.nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.nav li a:hover {
+  color: #007bff;
+}
+
+.active a {
+  font-weight: bold;
+  color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+}
