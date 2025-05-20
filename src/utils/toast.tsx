@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { Toaster } from 'react-hot-toast';
 import type { ToastPosition } from 'react-hot-toast';
 import { FaInfoCircle } from 'react-icons/fa';
