@@ -5,6 +5,8 @@ import { ChatUserCard } from "../chatCard/ChatUserCard";
 import { format } from "date-fns";
 import { IoSend } from "react-icons/io5";
 import { CgSpinner } from "react-icons/cg";
+import { IoArrowBack } from "react-icons/io5";
+
 interface Message {
   _id: string;
   from: string;
@@ -41,6 +43,9 @@ export const WhatsAppConsole = () => {
     {}
   );
   const [recentPhones, setRecentPhones] = useState<string[]>([]);
+
+  // Add new state for mobile view
+  const [showChatList, setShowChatList] = useState(true);
 
   // Set initial messages when a phone is selected or data changes
   useEffect(() => {
@@ -99,6 +104,7 @@ export const WhatsAppConsole = () => {
     }
   }, [sendMessageSuccess]);
 
+  // Modify handleSelectChat to handle mobile view
   const handleSelectChat = (phone: string) => {
     setSelectedPhone(phone);
     getMessagesByPhoneNumber(phone);
@@ -106,6 +112,15 @@ export const WhatsAppConsole = () => {
       ...prev,
       [phone]: 0,
     }));
+    // On mobile, switch to chat view
+    if (window.innerWidth < 1024) {
+      setShowChatList(false);
+    }
+  };
+
+  // Add function to handle back button
+  const handleBack = () => {
+    setShowChatList(true);
   };
 
   if (isLoading) {
@@ -157,9 +172,12 @@ export const WhatsAppConsole = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-3">
-      <div className="flex gap-4">
-        <div className="w-1/4 h-[700px] bg-gray-100 p-4 rounded">
+    <div className="min-h-screen bg-gray-50 p-2 md:p-3">
+      <div className="flex flex-col lg:flex-row gap-2 md:gap-4">
+        {/* Chat List - Sidebar */}
+        <div className={`w-full lg:w-1/4 h-[500px] md:h-[600px] lg:h-[700px] bg-gray-100 p-2 md:p-4 rounded ${
+          !showChatList ? 'hidden lg:block' : ''
+        }`}>
           <h1 className="text-sm font-semibold mb-4">Messages</h1>
           {/* List of recent chats */}
           <div className="flex flex-col gap-2 w-full">
@@ -169,7 +187,7 @@ export const WhatsAppConsole = () => {
                 <div
                   key={phone}
                   onClick={() => handleSelectChat(phone)}
-                  className={`flex flex-col gap-2 cursor-pointer ${
+                  className={`flex flex-col gap-2 cursor-pointer hover:bg-gray-200 transition-colors ${
                     selectedPhone === phone ? "bg-gray-200" : ""
                   }`}
                 >
@@ -190,8 +208,23 @@ export const WhatsAppConsole = () => {
         </div>
 
         {/* Main Chat Area */}
-        <div className="w-3/4 h-[700px] flex flex-col relative">
-          <div className="flex-grow overflow-y-auto p-4 bg-gray-100">
+        <div className={`w-full lg:w-3/4 h-[500px] md:h-[600px] lg:h-[700px] flex flex-col relative ${
+          showChatList ? 'hidden lg:flex' : 'flex'
+        }`}>
+          {/* Mobile Header with Back Button */}
+          <div className="lg:hidden flex items-center p-2 bg-gray-100 border-b">
+            <button
+              onClick={handleBack}
+              className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+            >
+              <IoArrowBack className="w-6 h-6" />
+            </button>
+            <span className="ml-2 font-semibold">
+              {selectedPhone || 'Select a chat'}
+            </span>
+          </div>
+
+          <div className="flex-grow overflow-y-auto p-2 md:p-4 bg-gray-100">
             {messages.map((msg) => (
               <div
                 key={msg._id}
@@ -204,24 +237,23 @@ export const WhatsAppConsole = () => {
                     msg.type === "outgoing" ? "flex-row-reverse" : ""
                   }`}
                 >
-                  {/* Avatar for incoming messages */}
                   <img
                     src={
                       msg.type === "incoming"
                         ? "https://avatar.iran.liara.run/public/32"
-                        : "https://avatar.iran.liara.run/public/1" // or your own avatar for outgoing
+                        : "https://avatar.iran.liara.run/public/1"
                     }
                     alt="User"
-                    className="w-8 h-8 rounded-full mx-2"
+                    className="w-6 h-6 md:w-8 md:h-8 rounded-full mx-1 md:mx-2"
                   />
                   <div
-                    className={`p-2 rounded max-w-xs ${
+                    className={`p-2 rounded max-w-[80%] md:max-w-xs ${
                       msg.type === "outgoing" ? "bg-blue-600 text-gray-200" : "bg-blue-700 text-gray-200"
                     }`}
                   >
                     <div className="flex items-end gap-2">
-                      <p className="text-sm">{msg.message}</p>
-                      <span className="text-xs text-gray-300">
+                      <p className="text-xs md:text-sm break-words">{msg.message}</p>
+                      <span className="text-[10px] md:text-xs text-gray-300 whitespace-nowrap">
                         {format(new Date(msg.timestamp), "hh:mm a")}
                       </span>
                     </div>
@@ -231,31 +263,31 @@ export const WhatsAppConsole = () => {
             ))}
             {!selectedPhone && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-700/20 bg-opacity-90 z-10">
-                <span className="text-xl text-gray-400 font-semibold">
+                <span className="text-base md:text-xl text-gray-400 font-semibold text-center px-4">
                   Select a chat to start messaging
                 </span>
               </div>
             )}
           </div>
           {selectedPhone && (
-            <form onSubmit={handleSendMessage} className="p-4 bg-white w-full">
+            <form onSubmit={handleSendMessage} className="p-2 md:p-4 bg-white w-full">
               <div className="w-full flex gap-2">
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="flex-grow p-2 w-full rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
+                  className="flex-grow p-2 w-full rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 text-sm md:text-base"
                   placeholder="Type a message..."
                   required
                 />
                 <button
                   type="submit"
-                  className="bg-blue-700 text-white px-2 py-1 rounded"
+                  className="bg-blue-700 text-white px-2 py-1 rounded hover:bg-blue-800 transition-colors"
                 >
                   {sendMessageLoading ? (
-                    <CgSpinner className="animate-spin" />
+                    <CgSpinner className="animate-spin w-5 h-5 md:w-6 md:h-6" />
                   ) : (
-                    <IoSend size={24} />
+                    <IoSend className="w-5 h-5 md:w-6 md:h-6" />
                   )}
                 </button>
               </div>
