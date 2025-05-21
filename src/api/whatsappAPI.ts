@@ -31,3 +31,12 @@ export const getMessagesByPhoneNumber = async (phoneNumber: string) => {
     throw error;
   }
 }
+
+export const getWhatsappUsers = async() =>{
+  try {
+    const response = await axiosInstance.get('/api/whatsapp/stats')
+    return response.data
+  } catch (error) {
+    throw error;
+  }
+}

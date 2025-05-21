@@ -7,19 +7,23 @@ interface CardProps {
     description?: string;
     totalColor?: string;
 }
+
 export const Card: React.FC<CardProps> = ({ title, value, icon, description, totalColor }) => {
   return (
-    <div className='w-80 h-40 bg-white p-3 flex justify-between px-4 rounded-lg shadow-md'>
-        <div className='flex flex-col justify-between'>
-            <h1 className='text-lg font-bold text-gray-500'>{title}</h1>
-            <p className='text-black font-bold text-2xl'>{value}</p>
-            <div className='flex mt-2 items-center'>
-                <span className={`p-1 bg-gray-200 rounded  font-semibold ${totalColor}`}>Total</span>
-                <span className='text-gray-600'>{description}</span>
+    <div className='bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border border-gray-100'>
+        <div className='flex justify-between items-start'>
+            <div className='space-y-2'>
+                <h1 className='text-sm font-medium text-gray-500 uppercase tracking-wider'>{title}</h1>
+                <p className='text-3xl font-bold text-gray-800'>{value}</p>
+                <div className='flex items-center space-x-2'>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${totalColor} bg-opacity-10`}>
+                        {description}
+                    </span>
+                </div>
             </div>
-        </div>
-        <div className='flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full'>
-            {icon}
+            <div className={`p-3 rounded-lg ${totalColor} bg-opacity-10`}>
+                {icon}
+            </div>
         </div>
     </div>
   )

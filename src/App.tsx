@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SetupProvider } from './contexts/SetupContext';
 import SetupWizard from './pages/setup/SetupWizard';
 import Login from './pages/auth/Login';
-import Dashboard from './pages/Dashboard';
+import {Dashboard} from './pages/Dashboard/Dashboard';
 import Gmail from './pages/gmail/Gmail';
 import GoogleCallback from './pages/GoogleCallback';
 import AuthError from './pages/auth/AuthError';

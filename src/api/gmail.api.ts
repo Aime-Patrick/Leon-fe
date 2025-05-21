@@ -62,4 +62,14 @@ export const gmailApi = {
             headers: getAuthHeader()
         });
     }
+
 }; 
+
+export const gmailStats = async() =>{
+    try {
+        const response = await axiosInstance.get('/api/gmail/stats');
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+}

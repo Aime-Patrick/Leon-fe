@@ -1,19 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import { MdDashboard, MdLogout } from "react-icons/md";
-import {  FaWhatsapp, FaEnvelope } from "react-icons/fa6";
-
+import { FaWhatsapp, FaEnvelope } from "react-icons/fa6";
+import { useAppConfig } from "../../hooks/useAppConfig";
 interface SidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
 }
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [activePath, setActivePath] = useState<string>("");
-  // const [channelOpen, setChannelOpen] = useState<boolean>(false);
+  const { data } = useAppConfig();
   const [user, setUser] = useState<any>(null);
   const location = useLocation();
 
@@ -22,7 +20,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
 
   useEffect(() => {
     // setActivePath(location.pathname);
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
     }
@@ -43,38 +41,46 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
   // ].includes(activePath);
 
   const navigation = [
-    { name: 'Dashboard', path: '/', icon: <MdDashboard /> },
-    { name: 'WhatsApp', path: '/whatsapp', icon: <FaWhatsapp /> },
-    { name: 'Gmail', path: '/gmail', icon: <FaEnvelope /> },
-
+    { name: "Dashboard", path: "/", icon: <MdDashboard /> },
+    { name: "WhatsApp", path: "/whatsapp", icon: <FaWhatsapp /> },
+    { name: "Gmail", path: "/gmail", icon: <FaEnvelope /> },
   ];
 
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === "/") {
+      return location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };
 
   return (
-    <div className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
+    <div className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
       <div className={styles.sidebarHeader}>
-        {!isCollapsed && <h2 className={styles.logo}>Leon</h2>}
-        <button 
+        {!isCollapsed && (
+          <div className="flex gap-1 items-center justify-center px-3">
+            {data?.logoUrl && (
+              <img
+                src={data.logoUrl}
+                alt="App Logo"
+                className="h-10 w-10 object-contain"
+              />
+            )}
+            <h2 className={styles.logo}>{data.appName || "Leon"}</h2>
+          </div>
+        )}
+        <button
           onClick={onToggleCollapse}
           className={styles.collapseButton}
           title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          {isCollapsed ? '→' : '←'}
+          {isCollapsed ? "→" : "←"}
         </button>
       </div>
 
       <div className={styles.userInfo}>
         {!isCollapsed && user && (
           <div className={styles.userDetails}>
-            <div className={styles.avatar}>
-              {user.name?.charAt(0) || 'U'}
-            </div>
+            <div className={styles.avatar}>{user.name?.charAt(0) || "U"}</div>
             <div className={styles.userName}>{user.name}</div>
           </div>
         )}
@@ -85,8 +91,10 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
           <Link
             key={item.path}
             to={item.path}
-            className={`${styles.navItem} ${isActive(item.path) ? styles.active : ''}`}
-            title={isCollapsed ? item.name : ''}
+            className={`${styles.navItem} ${
+              isActive(item.path) ? styles.active : ""
+            }`}
+            title={isCollapsed ? item.name : ""}
           >
             <span className={styles.icon}>{item.icon}</span>
             {!isCollapsed && <span className={styles.label}>{item.name}</span>}

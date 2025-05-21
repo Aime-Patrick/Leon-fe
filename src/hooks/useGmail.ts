@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '../utils/axios';
 import type {  ComposeEmail, EmailFolder } from '../types/gmail';
-
 const normalizeFolder = (folder: EmailFolder): EmailFolder => {
   return folder.toUpperCase() as EmailFolder;
 };
