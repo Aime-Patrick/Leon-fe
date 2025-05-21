@@ -15,7 +15,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import { CustomToaster } from './utils/toast';
 import { WhatsAppConsole } from './components/whatsapp/whatsapp';
-
+import Profile from './pages/profile/Profile';
 const queryClient = new QueryClient();
 
 // Layout component for authenticated routes
@@ -81,6 +81,7 @@ const App = () => {
                                                 <Route index element={<Dashboard />} />
                                                 <Route path="gmail" element={<Gmail />} />
                                                 <Route path="whatsapp" element={<WhatsAppConsole />} />
+                                                <Route path="profile" element={<Profile />} />
                                             </Routes>
                                         </AuthenticatedLayout>
                                     }

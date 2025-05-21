@@ -11,7 +11,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
-  const { data } = useAppConfig();
+  const { data, isLoading } = useAppConfig();
   const [user, setUser] = useState<any>(null);
   const location = useLocation();
 
@@ -53,6 +53,14 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
     return location.pathname.startsWith(path);
   };
 
+  if (isLoading) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+    );
+}
+
   return (
     <div className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
       <div className={styles.sidebarHeader}>
@@ -65,7 +73,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
                 className="h-10 w-10 object-contain"
               />
             )}
-            <h2 className={styles.logo}>{data.appName || "Leon"}</h2>
+            <h2 className={styles.logo}>{data?.appName || "Leon"}</h2>
           </div>
         )}
         <button
