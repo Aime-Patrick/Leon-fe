@@ -8,6 +8,7 @@ import { useWhatsappStats } from '../../hooks/useWhatsappNumber';
 
 export const Dashboard: React.FC = () => {
   const {data, isLoading, error} = userGmailStats()
+  console.log(data)
   const {whatsappStats, whatsappStatsError, whatsappStatsLoading} = useWhatsappStats ()
 
   if (isLoading || whatsappStatsLoading) {
@@ -45,7 +46,7 @@ if (error || whatsappStatsError) {
           />
           <Card 
             title='Gmail Inbox' 
-            value={data.totalEmails || 0} 
+            value={data?.data?.totalEmails || 0} 
             description='Total Emails' 
             icon={<MdEmail className='text-red-500 text-2xl'/>} 
             totalColor='text-red-500'

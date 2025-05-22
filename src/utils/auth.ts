@@ -1,10 +1,9 @@
-import axios from 'axios';
+import axiosInstance from './axios';
 
-const API_URL = 'http://localhost:5000/api';
 
 export const initiateGoogleAuth = async () => {
     try {
-        const response = await axios.get(`${API_URL}/auth/google`);
+        const response = await axiosInstance.get(`/api/auth/gmail/auth`);
         // Open the auth URL in a new window
         window.location.href = response.data.authUrl;
     } catch (error) {

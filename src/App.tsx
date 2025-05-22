@@ -69,7 +69,7 @@ const App = () => {
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/forgot-password" element={<ForgotPassword />} />
                                 <Route path="/reset-password" element={<ResetPassword />} />
-                                <Route path="/auth/google/callback" element={<GoogleCallback />} />
+                                <Route path="/auth/gmail/callback" element={<GoogleCallback />} />
                                 <Route path="/auth/error" element={<AuthError />} />
                                 
                                 {/* Authenticated routes */}

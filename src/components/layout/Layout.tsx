@@ -16,7 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
   if (location.pathname === '/login' || 
       location.pathname === '/forgot-password' || 
       location.pathname === '/reset-password' ||
-      location.pathname === '/auth/google/callback' ||
+      location.pathname === '/auth/gmail/callback' ||
       location.pathname === '/auth/error') {
     return <>{children}</>;
   }

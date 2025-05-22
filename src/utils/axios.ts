@@ -24,9 +24,19 @@ axiosInstance.interceptors.request.use(
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
+    // Check if we got a new access token
+    const newToken = response.headers['x-new-access-token'];
+    if (newToken) {
+      localStorage.setItem('gmail_access_token', newToken);
+    }
     return response;
   },
-  (error) => {
+  async (error) => {
+    if (error.response?.status === 401) {
+      // Clear the token and redirect to Gmail auth
+      localStorage.clear();
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

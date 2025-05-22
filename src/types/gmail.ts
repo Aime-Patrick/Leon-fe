@@ -1,35 +1,34 @@
-export type EmailFolder = 
-  | 'INBOX' 
-  | 'SENT' 
-  | 'DRAFT' 
-  | 'TRASH' 
-  | 'SPAM' 
-  | 'STARRED'
-  | 'inbox' 
-  | 'sent' 
-  | 'draft' 
-  | 'trash' 
-  | 'spam'
-  | 'starred';
+export type EmailFolder =
+  | "INBOX"
+  | "SENT"
+  | "DRAFT"
+  | "TRASH"
+  | "SPAM"
+  | "STARRED"
+  | "inbox"
+  | "sent"
+  | "draft"
+  | "trash"
+  | "spam"
+  | "starred";
 
 export interface Email {
   id: string;
-  threadId: string;
   from: string;
-  to: string[];
+  to?: string[];
   subject: string;
   snippet: string;
   date: string;
   isRead: boolean;
-  isStarred: boolean;
-  labels: string[];
+  isStarred?: boolean;
+  labels?: string[];
+  images?: string | string[];
 }
 
 export interface ComposeEmail {
-  to: string[];
+  to: string | string[]; // allow either
   subject: string;
   body: string;
-  attachments?: File[];
 }
 
 export interface EmailDetails extends Email {
@@ -40,4 +39,4 @@ export interface EmailDetails extends Email {
     size: number;
     attachmentId: string;
   }[];
-} 
+}

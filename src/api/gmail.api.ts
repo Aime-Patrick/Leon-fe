@@ -1,75 +1,46 @@
-import axiosInstance from "../utils/axios";
+import axiosInstance from '../utils/axios';
+import type { Email, EmailDetails, ComposeEmail, EmailFolder } from '../types/gmail';
 
 const BASE_URL = '/api/gmail';
 
-export interface Email {
-    id: string;
-    from: string;
-    subject: string;
-    snippet: string;
-    date: string;
-    isRead: boolean;
-    isStarred?: boolean;
-}
-
-export interface ComposeEmail {
-    to: string;
-    subject: string;
-    body: string;
-}
-
-export interface EmailDetails extends Email {
-    body: string;
-}
-
-export type EmailFolder = 'inbox' | 'sent' | 'trash' | 'starred';
-
-const getAuthHeader = () => ({
-    Authorization: `Bearer ${localStorage.getItem('gmail_access_token')}`
-});
-
 export const gmailApi = {
-    getEmails: async (folder: EmailFolder = 'inbox'): Promise<Email[]> => {
-        const response = await axiosInstance.get(`${BASE_URL}/messages`, {
-            headers: getAuthHeader(),
-            params: { folder }
-        });
-        return response.data.messages;
+    getEmails: async (folder: EmailFolder = 'inbox', maxResults: number = 10, pageToken?: string): Promise<{ emails: Email[], pagination: { nextPageToken?: string, resultSizeEstimate?: number } }> => {
+        const params = new URLSearchParams();
+        if (maxResults) params.append('maxResults', maxResults.toString());
+        if (pageToken) params.append('pageToken', pageToken);
+        
+        const response = await axiosInstance.get(`${BASE_URL}/messages/${folder}?${params.toString()}`);
+        return {
+            emails: response.data.data || [],
+            pagination: response.data.pagination || {}
+        };
     },
 
     getEmailDetails: async (messageId: string): Promise<EmailDetails> => {
-        const response = await axiosInstance.get(`${BASE_URL}/messages/${messageId}`, {
-            headers: getAuthHeader()
-        });
-        return response.data;
+        const response = await axiosInstance.get(`${BASE_URL}/messages/${messageId}`);
+        return response.data.data;
     },
 
     sendEmail: async (email: ComposeEmail): Promise<void> => {
-        await axiosInstance.post(`${BASE_URL}/send`, email, {
-            headers: getAuthHeader()
-        });
+        await axiosInstance.post(`${BASE_URL}/send`, email);
     },
 
     toggleStar: async (messageId: string, isStarred: boolean): Promise<void> => {
         await axiosInstance.post(`${BASE_URL}/messages/${messageId}/star`, 
-            { isStarred },
-            { headers: getAuthHeader() }
+            { isStarred }
         );
     },
 
     moveToTrash: async (messageId: string): Promise<void> => {
-        await axiosInstance.post(`${BASE_URL}/messages/${messageId}/trash`, {}, {
-            headers: getAuthHeader()
-        });
+        await axiosInstance.post(`${BASE_URL}/messages/${messageId}/trash`, {});
     }
+};
 
-}; 
-
-export const gmailStats = async() =>{
+export const gmailStats = async() => {
     try {
         const response = await axiosInstance.get('/api/gmail/stats');
-        return response.data
+        return response.data;
     } catch (error) {
         throw error;
     }
-}
+};
