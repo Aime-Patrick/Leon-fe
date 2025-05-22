@@ -13,9 +13,6 @@ import {
   FaUser,
   FaCalendarAlt,
   FaPaperclip,
-  FaChevronDown,
-  FaChevronUp,
-  FaEllipsisV,
 } from "react-icons/fa";
 import axiosInstance from "../../utils/axios";
 import { useGmail } from "../../hooks/useGmail";
@@ -32,89 +29,13 @@ interface ErrorResponse {
 interface MessageCardProps {
   content: string;
   isQuoted?: boolean;
-  onReply?: () => void;
-  onForward?: () => void;
-  onDelete?: () => void;
   headerLine?: string;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
   content,
   isQuoted = false,
-  onReply,
-  onForward,
-  onDelete,
-  headerLine,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [showActions, setShowActions] = useState(false);
-
-  const parseHeaderInfo = (header: string) => {
-    if (!header) return { name: '', email: '', date: '' };
-
-    // Extract date
-    const dateMatch = header.match(/On (.*?) wrote:/);
-    const date = dateMatch ? dateMatch[1] : '';
-
-    // Extract name, organization, and email
-    // Format: "Name, Organization" <email@domain.com>
-    const nameOrgEmailMatch = header.match(/"([^"]+)" <([^>]+)>/);
-    if (nameOrgEmailMatch && nameOrgEmailMatch[1] && nameOrgEmailMatch[2]) {
-      const nameOrg = nameOrgEmailMatch[1];
-      const email = nameOrgEmailMatch[2];
-      // Split name and organization
-      const [name, organization] = nameOrg.split(',').map(s => s.trim());
-      return {
-        name: name || '',
-        organization: organization || '',
-        email: email,
-        date: date
-      };
-    }
-
-    // Try alternative format: Name <email@domain.com>
-    const nameEmailMatch = header.match(/([^<]+) <([^>]+)>/);
-    if (nameEmailMatch && nameEmailMatch[1] && nameEmailMatch[2]) {
-      return {
-        name: nameEmailMatch[1].trim(),
-        email: nameEmailMatch[2].trim(),
-        date: date
-      };
-    }
-
-    // If only email is present
-    const emailMatch = header.match(/<([^>]+)>/);
-    if (emailMatch && emailMatch[1]) {
-      const email = emailMatch[1].trim();
-      return {
-        name: email.split('@')[0] || '', // Use part before @ as name
-        email: email,
-        date: date
-      };
-    }
-
-    return { name: '', email: '', date: '' };
-  };
-
-  const formatDate = (dateStr: string) => {
-    try {
-      const date = new Date(dateStr);
-      return date.toLocaleString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      });
-    } catch (e) {
-      return dateStr;
-    }
-  };
-
-  // Remove unused destructured variables
-  parseHeaderInfo(headerLine || '');
 
   const formatMessageContent = (text: string) => {
     const lines = text.split('\n');
@@ -140,13 +61,11 @@ const MessageCard: React.FC<MessageCardProps> = ({
     <div className={`${isQuoted ? 'bg-gray-50' : 'bg-white'}`}>
       <div className="p-4">
         {/* Message Content */}
-        {isExpanded && (
-          <div className="mt-3">
-            <div className="prose max-w-none">
-              {formatMessageContent(content)}
-            </div>
+        <div className="mt-3">
+          <div className="prose max-w-none">
+            {formatMessageContent(content)}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -166,7 +85,6 @@ const Gmail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageToken, setPageToken] = useState<string | undefined>();
-  const [hasMore, setHasMore] = useState(true);
   const ITEMS_PER_PAGE = 10;
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState('');
@@ -401,18 +319,6 @@ const Gmail = () => {
             content={cleanContent}
             isQuoted={index > 0}
             headerLine={cleanHeader}
-            onReply={() => {
-              setSelectedEmail(selectedEmail);
-              setIsReplying(true);
-            }}
-            onForward={() => {
-              // Implement forward functionality
-            }}
-            onDelete={() => {
-              if (selectedEmail) {
-                handleMoveToTrash(selectedEmail, {} as React.MouseEvent);
-              }
-            }}
           />
         </div>
       );
