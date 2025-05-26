@@ -16,6 +16,8 @@ import ResetPassword from './pages/auth/ResetPassword';
 import { CustomToaster } from './utils/toast';
 import { WhatsAppConsole } from './components/whatsapp/whatsapp';
 import Profile from './pages/profile/Profile';
+import Facebook from './pages/facebook/Facebook';
+import FacebookCallback from './pages/facebook/FacebookCallback';
 const queryClient = new QueryClient();
 
 // Layout component for authenticated routes
@@ -70,6 +72,7 @@ const App = () => {
                                 <Route path="/forgot-password" element={<ForgotPassword />} />
                                 <Route path="/reset-password" element={<ResetPassword />} />
                                 <Route path="/auth/gmail/callback" element={<GoogleCallback />} />
+                                <Route path="/auth/facebook/callback" element={<FacebookCallback />} />
                                 <Route path="/auth/error" element={<AuthError />} />
                                 
                                 {/* Authenticated routes */}
@@ -81,6 +84,7 @@ const App = () => {
                                                 <Route index element={<Dashboard />} />
                                                 <Route path="gmail" element={<Gmail />} />
                                                 <Route path="whatsapp" element={<WhatsAppConsole />} />
+                                                <Route path='facebook' element={<Facebook />} />
                                                 <Route path="profile" element={<Profile />} />
                                             </Routes>
                                         </AuthenticatedLayout>

@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import { MdDashboard, MdLogout } from "react-icons/md";
-import { FaWhatsapp, FaEnvelope } from "react-icons/fa6";
+import { FaWhatsapp, FaEnvelope, FaFacebook } from "react-icons/fa";
 import { useAppConfig } from "../../hooks/useAppConfig";
+
 interface SidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
@@ -42,8 +43,24 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
 
   const navigation = [
     { name: "Dashboard", path: "/", icon: <MdDashboard /> },
-    { name: "WhatsApp", path: "/whatsapp", icon: <FaWhatsapp /> },
-    { name: "Gmail", path: "/gmail", icon: <FaEnvelope /> },
+    { 
+      name: "WhatsApp", 
+      path: "/whatsapp", 
+      icon: <FaWhatsapp />,
+
+    },
+    { 
+      name: "Gmail", 
+      path: "/gmail", 
+      icon: <FaEnvelope />,
+
+    },
+    { 
+      name: "Facebook", 
+      path: "/facebook", 
+      icon: <FaFacebook />,
+     
+    },
   ];
 
   const isActive = (path: string) => {
@@ -56,7 +73,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
   if (isLoading) {
     return (
         <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full border-b-2 border-blue-500"></div>
         </div>
     );
 }

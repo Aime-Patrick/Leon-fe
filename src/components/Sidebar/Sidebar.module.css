@@ -109,6 +109,7 @@
 .label {
   font-size: 0.875rem;
   white-space: nowrap;
+  flex: 1;
 }
 
 .sidebarFooter {
