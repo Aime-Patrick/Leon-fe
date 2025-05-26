@@ -18,6 +18,7 @@ import { WhatsAppConsole } from './components/whatsapp/whatsapp';
 import Profile from './pages/profile/Profile';
 import Facebook from './pages/facebook/Facebook';
 import FacebookCallback from './pages/facebook/FacebookCallback';
+import TikTok from './pages/tiktok/TikTok';
 const queryClient = new QueryClient();
 
 // Layout component for authenticated routes
@@ -85,6 +86,7 @@ const App = () => {
                                                 <Route path="gmail" element={<Gmail />} />
                                                 <Route path="whatsapp" element={<WhatsAppConsole />} />
                                                 <Route path='facebook' element={<Facebook />} />
+                                                <Route path='tiktok' element={<TikTok />} />
                                                 <Route path="profile" element={<Profile />} />
                                             </Routes>
                                         </AuthenticatedLayout>

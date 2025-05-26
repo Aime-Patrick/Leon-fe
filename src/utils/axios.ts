@@ -38,15 +38,15 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
-    if (error.response?.status === 401) {
-      // Clear the token and redirect to login
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
+  // (error) => {
+  //   if (error.response?.status === 401) {
+  //     // Clear the token and redirect to login
+  //     localStorage.removeItem('token');
+  //     localStorage.removeItem('user');
+  //     window.location.href = '/login';
+  //   }
+  //   return Promise.reject(error);
+  // }
 );
 
 export default axiosInstance;
