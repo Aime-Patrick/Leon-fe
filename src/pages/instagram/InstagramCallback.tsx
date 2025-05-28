@@ -27,10 +27,11 @@ const InstagramCallback: React.FC = () => {
             }
 
             try {
-                await axiosInstance.post('/api/instagram/callback', { code });
+                await axiosInstance.get(`/api/instagram/callback?code=${code}`);
                 toast.success('Successfully connected to Instagram');
                 navigate('/instagram');
             } catch (error: any) {
+                console.error('Instagram callback error:', error);
                 const errorMessage = error.response?.data?.message || 'Failed to connect to Instagram';
                 toast.error(errorMessage);
                 navigate('/instagram');
