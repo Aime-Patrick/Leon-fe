@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import { MdDashboard, MdLogout } from "react-icons/md";
-import { FaWhatsapp, FaEnvelope, FaFacebook, FaTiktok } from "react-icons/fa";
+import { FaWhatsapp, FaEnvelope, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 import { useAppConfig } from "../../hooks/useAppConfig";
 
 interface SidebarProps {
@@ -65,6 +65,11 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }: SidebarProps) => {
       name: "TikTok",
       path: "/tiktok",
       icon: <FaTiktok />
+    },
+    {
+      name: "Instagram",
+      path: "/instagram",
+      icon: <FaInstagram />
     }
   ];
 

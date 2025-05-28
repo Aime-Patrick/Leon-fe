@@ -1,6 +1,24 @@
 import axiosInstance from "../utils/axios";
 
 // Types
+export type CampaignObjective =
+    | 'OUTCOME_TRAFFIC'
+    | 'OUTCOME_AWARENESS'
+    | 'OUTCOME_ENGAGEMENT'
+    | 'OUTCOME_LEADS'
+    | 'OUTCOME_SALES'
+    | 'OUTCOME_APP_PROMOTION'
+    | 'OUTCOME_MESSAGES'
+    | 'OUTCOME_REACH'
+    | 'OUTCOME_VIDEO_VIEWS'
+    | 'OUTCOME_STORE_VISITS';
+
+export type SpecialAdCategory =
+    | 'HOUSING'
+    | 'EMPLOYMENT'
+    | 'CREDIT'
+    | 'ISSUES_ELECTIONS_POLITICS';
+
 export interface Campaign {
     id: string;
     name: string;
@@ -131,7 +149,7 @@ export const createAd = async (adSetId: string, adData: {
 export const getPages = async (): Promise<Page[]> => {
     try {
         const response = await axiosInstance.get('/api/facebook/pages');
-    return response.data;
+    return response.data.data;
     } catch (error) {
         throw error
     }
