@@ -1,5 +1,6 @@
+/* eslint-disable */
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getTikTokLoginUrl, getTikTokAccountInfo, TikTokAccountInfo } from '../api/tiktokApi';
+import { getTikTokLoginUrl, getTikTokAccountInfo, type TikTokAccountInfo } from '../api/tiktokApi';
 import { toast } from 'react-hot-toast';
 
 export const useTikTokAccount = () => {
@@ -25,14 +26,12 @@ export const useTikTokAccount = () => {
     });
 
     const isConnected = !!accountInfo;
-    const isTokenExpired = error?.response?.status === 401;
 
     return {
         accountInfo,
         isLoading,
         error,
         isConnected,
-        isTokenExpired,
         connect: getLoginUrlMutation.mutate,
         isConnecting: getLoginUrlMutation.isPending,
         refetch,

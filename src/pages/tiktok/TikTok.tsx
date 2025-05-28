@@ -2,63 +2,15 @@ import { useState, useEffect } from "react";
 import { FaTiktok, } from "react-icons/fa";
 import axiosInstance from "../../utils/axios";
 import { toast } from "react-hot-toast";
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useTikTokAccount } from '../../hooks/useTikTokAccount';
 import { useTikTokVideos } from '../../hooks/useTikTokVideos';
-import type { CreateVideoData } from '../../api/tiktokApi';
+import type { CreateVideoData, TikTokVideo } from '../../api/tiktokApi';
 import { FiUpload, FiRefreshCw } from 'react-icons/fi';
 
-// interface ErrorResponse {
-//   error: string;
-//   details?: string;
-// }
-
-interface TikTokVideo {
-  id: string;
-  description: string;
-  createTime: number;
-  author: {
-    id: string;
-    uniqueId: string;
-    nickname: string;
-    avatarThumb: string;
-  };
-  statistics: {
-    playCount: number;
-    diggCount: number;
-    commentCount: number;
-    shareCount: number;
-  };
-  video: {
-    cover: string;
-    playAddr: string;
-  };
-}
-
-// interface TikTokStatus {
-//     isConnected: boolean;
-//     accountInfo?: {
-//         id: string;
-//         username: string;
-//         displayName: string;
-//         avatarUrl: string;
-//         followersCount: number;
-//         followingCount: number;
-//         likesCount: number;
-//         videoCount: number;
-//     };
-// }
 
 const TikTok = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const [videos, setVideos] = useState<TikTokVideo[]>([]);
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [user, setUser] = useState<any>(null);
-  const location = useLocation();
-  // const navigate = useNavigate();
-  // const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  // const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCreatingVideo, setIsCreatingVideo] = useState(false);
   const [createVideoData, setCreateVideoData] = useState<CreateVideoData>({
     description: '',
@@ -70,7 +22,6 @@ const TikTok = () => {
     accountInfo,
     isLoading: isAccountLoading,
     isConnected,
-    isTokenExpired,
     connect,
     isConnecting,
     refetch: refetchAccount,
@@ -81,9 +32,6 @@ const TikTok = () => {
     isLoading: isVideosLoading,
     uploadVideo,
     isUploading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
   } = useTikTokVideos();
 
   const handleAuth = async () => {
@@ -152,25 +100,6 @@ const TikTok = () => {
     }
   }, [refetchAccount]);
 
-  const handleConnect = async () => {
-    try {
-      // setErrorMessage(null);
-      const response = await axiosInstance.get('/api/tiktok/auth/login');
-      if (response.data) {
-        const currentSession = {
-          timestamp: Date.now(),
-          returnUrl: window.location.pathname
-        };
-        sessionStorage.setItem('tiktokOAuthState', JSON.stringify(currentSession));
-        
-        window.location.href = response.data;
-      }
-    } catch (error: any) {
-      console.error('TikTok connection error:', error);
-      // setErrorMessage(error.response?.data?.message || 'Failed to connect to TikTok');
-      toast.error(error.response?.data?.message || 'Failed to connect to TikTok');
-    }
-  };
 
   const handleVideoUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,16 +122,10 @@ const TikTok = () => {
   };
 
   if (!isAuthenticated) {
-    let isTokenExpired = false;
     return (
       <div className="flex flex-col items-center justify-center h-full p-6">
         <div className="text-center flex flex-col justify-center items-center w-full">
           <h2 className="text-2xl font-bold mb-4">Connect to TikTok</h2>
-          <p className="text-gray-600 mb-6">
-            {isTokenExpired
-              ? "Your TikTok connection has expired. Please reconnect to continue."
-              : "To use TikTok features, you need to connect your TikTok account."}
-          </p>
           <button
             onClick={handleAuth}
             className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-md flex items-center"
@@ -212,7 +135,7 @@ const TikTok = () => {
             ) : (
               <span className="flex items-center justify-center">
                 <FaTiktok className="mr-2" />
-                {isTokenExpired ? "Reconnect TikTok" : "Connect TikTok"}
+                {"Connect TikTok"}
               </span>
             )}
           </button>
@@ -309,7 +232,7 @@ const TikTok = () => {
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
-        ) : tiktokVideos.length === 0 ? (
+        ) : tiktokVideos?.videos?.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-600 mb-4">No videos uploaded yet</p>
             <button
@@ -321,7 +244,7 @@ const TikTok = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tiktokVideos.map((video: any) => (
+            {tiktokVideos?.videos?.map((video: TikTokVideo) => (
               <div key={video.id} className="bg-gray-50 rounded-lg overflow-hidden">
                 <div className="relative aspect-[9/16]">
                   <img
@@ -351,18 +274,6 @@ const TikTok = () => {
                 </div>
               </div>
             ))}
-          </div>
-        )}
-
-        {hasNextPage && (
-          <div className="text-center mt-8">
-            <button
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-              className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
-            >
-              {isFetchingNextPage ? 'Loading...' : 'Load More'}
-            </button>
           </div>
         )}
       </div>

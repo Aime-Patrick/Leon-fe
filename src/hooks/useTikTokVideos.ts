@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getTikTokVideos, uploadTikTokVideo, CreateVideoData, TikTokVideo } from '../api/tiktokApi';
+import { getTikTokVideos, uploadTikTokVideo, type CreateVideoData} from '../api/tiktokApi';
 import { toast } from 'react-hot-toast';
 
 export const useTikTokVideos = (cursor?: string) => {
@@ -9,13 +9,9 @@ export const useTikTokVideos = (cursor?: string) => {
         data,
         isLoading,
         error,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage
     } = useQuery({
         queryKey: ['tiktokVideos', cursor],
         queryFn: () => getTikTokVideos(cursor),
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
     });
 
     const uploadVideoMutation = useMutation({
@@ -29,18 +25,12 @@ export const useTikTokVideos = (cursor?: string) => {
         },
     });
 
-    const videos = data?.pages.flatMap(page => page.videos) || [];
-    const nextCursor = data?.pages[data.pages.length - 1]?.nextCursor;
 
     return {
-        videos,
+        videos:data,
         isLoading,
         error,
         uploadVideo: uploadVideoMutation.mutate,
         isUploading: uploadVideoMutation.isPending,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        nextCursor,
     };
 }; 
