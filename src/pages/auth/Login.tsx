@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axios';
 import { toast } from 'react-hot-toast';
 
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -49,32 +50,17 @@ const Login = () => {
             setResetError(err.response?.data?.error || 'Failed to send reset email. Please try again.');
         } finally {
             setResetLoading(false);
+            setTimeout(() => {
+                setShowResetModal(false);
+                setResetEmail('');
+                setResetError('');
+                setResetSuccess(false);
+                navigate('/login'); // Redirect to login after reset
+            }
+            , 3000); // Close modal after 2 seconds
         }
     };
 
-    // const handleForgotPassword = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     setError('');
-    //     setIsLoading(true);
-
-    //     try {
-    //         await axiosInstance.post('/api/auth/forgot-password', {
-    //             email: forgotPasswordEmail
-    //         });
-    //         setShowForgotPasswordModal(false);
-    //         setForgotPasswordEmail('');
-    //         // Redirect to reset password page with a success message
-    //         navigate('/reset-password', { 
-    //             state: { 
-    //                 message: 'Password reset instructions have been sent to your email. Please check your inbox.' 
-    //             }
-    //         });
-    //     } catch (err: any) {
-    //         setError(err.response?.data?.error || 'Failed to send reset email');
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

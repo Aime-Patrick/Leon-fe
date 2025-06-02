@@ -24,7 +24,7 @@ const GoogleCallback = () => {
                 }
 
                 // Step 1: Exchange code for tokens
-                const response = await axiosInstance.get(`/api/auth/gmail/callback?code=${code}`);
+                const response = await axiosInstance.get(`/api/auth/google/callback?code=${code}`);
                 
                 if (!response.data.success) {
                     throw new Error(response.data.error || 'Failed to exchange code for tokens');

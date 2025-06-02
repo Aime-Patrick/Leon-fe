@@ -5,8 +5,6 @@ export const useAppConfig = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ["AppConfig"],
         queryFn: getAppConfig,
-        refetchInterval: 1000,
-        refetchOnWindowFocus: false,
     });
 
     return {

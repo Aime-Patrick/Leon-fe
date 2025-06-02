@@ -8,7 +8,6 @@ import { useWhatsappStats } from '../../hooks/useWhatsappNumber';
 
 export const Dashboard: React.FC = () => {
   const {data, isLoading, error} = userGmailStats()
-  console.log(data)
   const {whatsappStats, whatsappStatsError, whatsappStatsLoading} = useWhatsappStats ()
 
   if (isLoading || whatsappStatsLoading) {
@@ -22,7 +21,7 @@ export const Dashboard: React.FC = () => {
 if (error || whatsappStatsError) {
     return (
         <div className="flex items-center justify-center h-full">
-            <div className="text-red-600">{error?.message || whatsappStatsError?.message}</div>
+            <div className="text-red-600">{(error as any)?.response?.data.message || whatsappStatsError?.message}</div>
         </div>
     );
 }

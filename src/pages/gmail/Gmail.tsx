@@ -109,7 +109,7 @@ const Gmail = () => {
   const handleAuth = async () => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.get("/api/auth/gmail/auth");
+      const response = await axiosInstance.get("/api/auth/google");
 
       if (!response.data.authUrl) {
         throw new Error("No auth URL received from server");
@@ -132,7 +132,7 @@ const Gmail = () => {
     const checkGmailAuth = async () => {
       try {
         // Verify token is still valid
-        const response = await axiosInstance.get("/api/auth/gmail/verify");
+        const response = await axiosInstance.get("/api/gmail/verify");
         setIsAuthenticated(response.data.success);
       } catch (error) {
         console.error("Invalid Gmail token:", error);
@@ -344,12 +344,12 @@ const Gmail = () => {
           </p>
           <button
             onClick={handleAuth}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md flex items-center"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md flex items-center whitespace-nowrap"
           >
             {isLoading ? (
               "Processing..."
             ) : (
-              <span>
+              <span className="whitespace-nowrap flex items-center">
                 <FaEnvelope className="mr-2" />
                 {isTokenExpired ? "Reconnect Gmail" : "Connect Gmail"}
               </span>

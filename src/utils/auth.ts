@@ -3,7 +3,7 @@ import axiosInstance from './axios';
 
 export const initiateGoogleAuth = async () => {
     try {
-        const response = await axiosInstance.get(`/api/auth/gmail/auth`);
+        const response = await axiosInstance.get(`/api/auth/google`);
         // Open the auth URL in a new window
         window.location.href = response.data.authUrl;
     } catch (error) {

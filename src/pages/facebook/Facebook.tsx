@@ -479,7 +479,7 @@ const Facebook = () => {
 
                     {/* Create Post Modal */}
                     {isCreatingPost && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                                 <h2 className="text-xl font-bold mb-4">Create New Post</h2>
                                 <div className="space-y-4">
@@ -488,7 +488,7 @@ const Facebook = () => {
                                         <select
                                             value={selectedPage?.id || ''}
                                             onChange={(e) => setSelectedPage(pages?.find(p => p.id === e.target.value) || null)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3"
                                         >
                                             <option value="">Select a page</option>
                                             {pages?.map(page => (
@@ -502,7 +502,7 @@ const Facebook = () => {
                                             value={createPostData.message}
                                             onChange={(e) => setCreatePostData({ ...createPostData, message: e.target.value })}
                                             rows={4}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4"
                                         />
                                     </div>
                                     <div>
@@ -511,7 +511,7 @@ const Facebook = () => {
                                             type="url"
                                             value={createPostData.link}
                                             onChange={(e) => setCreatePostData({ ...createPostData, link: e.target.value })}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3"
                                         />
                                     </div>
                                     <div className="flex space-x-4">
