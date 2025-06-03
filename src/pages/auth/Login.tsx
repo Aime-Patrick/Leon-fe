@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../../utils/axios';
 import { toast } from 'react-hot-toast';
 
@@ -135,6 +135,13 @@ const Login = () => {
                             </button>
                         </div>
                     </form>
+
+                    <div className="text-center text-sm mt-4">
+                        Don&apos;t have an account?{" "}
+                        <Link to={"/register"} className="text-blue-600 hover:underline">
+                            Register
+                        </Link>
+                    </div>
                 </div>
             </div>
 
@@ -202,4 +209,4 @@ const Login = () => {
     );
 };
 
-export default Login; 
+export default Login;

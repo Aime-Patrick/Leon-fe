@@ -11,7 +11,6 @@ export const useGmail = () => {
             queryKey: ['emails', folder, pageToken],
             queryFn: () => gmailApi.getEmails(folder, maxResults, pageToken),
             enabled: isAuthenticated,
-            refetchInterval: 30000,
         });
     };
 

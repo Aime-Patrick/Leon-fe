@@ -23,6 +23,7 @@ import CreateCampaign from "./pages/facebook/CreateCampaign";
 import Instagram from "./pages/instagram/Instagram";
 import CreatePost from "./pages/instagram/CreatePost";
 import InstagramCallback from "./pages/instagram/InstagramCallback";
+import Register from "./pages/auth/Register";
 const queryClient = new QueryClient();
 
 // Layout component for authenticated routes
@@ -97,6 +98,7 @@ const App = () => {
                   path="/facebook/campaigns/new"
                   element={<CreateCampaign />}
                 />
+                <Route path="/register" element={<Register />} />
 
                 {/* Authenticated routes */}
                 <Route

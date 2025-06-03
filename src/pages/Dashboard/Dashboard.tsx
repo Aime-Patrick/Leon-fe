@@ -7,24 +7,59 @@ import { userGmailStats } from '../../hooks/gmailStats';
 import { useWhatsappStats } from '../../hooks/useWhatsappNumber';
 
 export const Dashboard: React.FC = () => {
-  const {data, isLoading, error} = userGmailStats()
-  const {whatsappStats, whatsappStatsError, whatsappStatsLoading} = useWhatsappStats ()
+  const { data, isLoading, error } = userGmailStats();
+  const { whatsappStats, whatsappStatsError, whatsappStatsLoading } = useWhatsappStats();
 
+  // Show loading spinner if either is loading
   if (isLoading || whatsappStatsLoading) {
     return (
-        <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        </div>
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
     );
-}
+  }
 
-if (error || whatsappStatsError) {
+  // If either has error, show error in a Card and stop rendering
+  if (error || whatsappStatsError) {
     return (
-        <div className="flex items-center justify-center h-full">
-            <div className="text-red-600">{(error as any)?.response?.data.message || whatsappStatsError?.message}</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <Card
+            title="Dashboard Error"
+            description="There was a problem loading your dashboard data."
+            icon={<span className="text-red-500 text-2xl">!</span>}
+            totalColor="text-red-500"
+          >
+            {error && (
+              <div className="text-red-600 mb-2">
+                Gmail Error: {(error as any)?.response?.data?.error || error.message || "Failed to load Gmail stats"}
+                {((error as any)?.response?.status === 401) && (
+                  <div className="text-sm text-gray-500 mt-1">You may need to re-authenticate your Gmail integration.</div>
+                )}
+              </div>
+            )}
+            {whatsappStatsError && (
+              <div className="text-red-600">
+                WhatsApp Error: {(whatsappStatsError as any)?.response?.data?.message || whatsappStatsError.message || "Failed to load WhatsApp stats"}
+                {((whatsappStatsError as any)?.response?.status === 401) && (
+                  <div className="text-sm text-gray-500 mt-1">You may need to re-authenticate your WhatsApp integration.</div>
+                )}
+              </div>
+            )}
+          </Card>
         </div>
+      </div>
     );
-}
+  }
+
+  // If either data is missing, show error and stop rendering
+  if (!data || !whatsappStats) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-red-600">Failed to load dashboard data.</div>
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen bg-gray-50'>

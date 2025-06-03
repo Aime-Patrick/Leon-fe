@@ -6,8 +6,6 @@ export const useWhatsappStats = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ["stats"],
         queryFn: getWhatsappUsers,
-        refetchInterval: 1000,
-        refetchOnWindowFocus: false,
     });
 
     return {

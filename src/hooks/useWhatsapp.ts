@@ -7,8 +7,6 @@ export const useWhatsapp = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ["messages"],
         queryFn: getMessages,
-        refetchInterval: 1000,
-        refetchOnWindowFocus: false,
     });
 
     const sendMessageMutation = useMutation({
