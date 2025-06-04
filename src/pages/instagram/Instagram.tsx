@@ -1,54 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { instagramApi, type InstagramInsights, type InstagramMedia, type InstagramProfile} from '../../api/instagramApi';
-import { toast } from 'react-hot-toast';
+import { useInstagram } from '../../hooks/useInstagram';
+import type { InstagramInsights, InstagramMedia, InstagramProfile } from '../../api/instagramApi';
 
 const Instagram: React.FC = () => {
     const navigate = useNavigate();
-    const [profile, setProfile] = useState<InstagramProfile | null>(null);
-    const [media, setMedia] = useState<InstagramMedia[]>([]);
-    const [insights, setInsights] = useState<InstagramInsights | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { useInsights, useMedia, useProfile } = useInstagram();
+
+    const profileQuery: any = useProfile();
+    const mediaQuery:any = useMedia();
+    const insightsQuery:any = useInsights();
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [profileData, mediaData, insightsData] = await Promise.all([
-                    instagramApi.getProfile(),
-                    instagramApi.getMedia(),
-                    instagramApi.getInsights()
-                ]);
-                setProfile(profileData);
-                setMedia(mediaData);
-                setInsights(insightsData);
-            } catch (error: any) {
-                if (error.response?.status === 400) {
-                    // Instagram not connected
-                    setError('Please connect your Instagram account first');
-                } else {
-                    setError('Failed to load Instagram data');
-                    toast.error('Failed to load Instagram data');
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
+        // Optionally, you can refetch here if needed
+        // profileQuery.refetch();
+        // mediaQuery.refetch();
+        // insightsQuery.refetch();
     }, []);
 
-    const handleConnect = async () => {
-        try {
-            const { authUrl } = await instagramApi.initiateAuth();
-            window.location.href = authUrl;
-        } catch (error) {
-            toast.error('Failed to initiate Instagram connection');
-            console.error('Instagram auth error:', error);
-        }
-    };
-
-    if (loading) {
+    // Loading state
+    if (profileQuery.isLoading || mediaQuery.isLoading || insightsQuery.isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -56,22 +27,24 @@ const Instagram: React.FC = () => {
         );
     }
 
-    if (error) {
+    // Error state
+    if (profileQuery.error || mediaQuery.error || insightsQuery.error) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <h1 className="text-2xl font-bold mb-4">Instagram Integration</h1>
-                    <p className="text-red-500 mb-4">{error}</p>
-                    <button
-                        onClick={handleConnect}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                    >
-                        Connect Instagram
-                    </button>
+                    <p className="text-red-500 mb-4">
+                        {profileQuery.error?.response.data.error || mediaQuery.error?.response.data.error || insightsQuery.error?.response.data.error}
+                    </p>
                 </div>
             </div>
         );
     }
+
+    // Data
+    const profile: InstagramProfile = profileQuery.data;
+    const media : InstagramMedia[] = mediaQuery.data || [];
+    const insights: InstagramInsights = insightsQuery.data;
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -178,4 +151,4 @@ const Instagram: React.FC = () => {
     );
 };
 
-export default Instagram; 
+export default Instagram;
